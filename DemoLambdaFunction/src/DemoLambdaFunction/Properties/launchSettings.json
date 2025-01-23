@@ -1,0 +1,17 @@
+{
+  "profiles": {
+    "DemoLambdaFunction": {
+      "commandName": "Project",
+      "launchBrowser": true,
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "POSTGRES_HOST": "my-postgres-db.cbmgeukk6xnj.us-east-1.rds.amazonaws.com",
+        "POSTGRES_PORT": "5432",
+        "POSTGRES_DB": "Survey-DB",
+        "POSTGRES_USER": "postgresadmin",
+        "POSTGRES_PASSWORD": "Admin!2025!2025"
+      },
+      "applicationUrl": "http://localhost:5000"
+    }
+  }
+}

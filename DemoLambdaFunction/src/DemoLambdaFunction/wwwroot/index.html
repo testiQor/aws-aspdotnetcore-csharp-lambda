@@ -1,84 +1,247 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Employee Satisfaction Survey</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #FF0000;
+            --secondary-color: #F0F0F0;
+            --accent-color: #FFA500;
+            --text-primary: #333333;
+            --text-secondary: #666666;
+            --text-light: #999999;
+            --spacing-unit: 16px;
+            --spacing-large: 24px;
+            --border-radius: 4px;
+        }
+
+        body {
+            font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            color: var(--text-primary);
+            line-height: 1.5;
+            background-color: var(--secondary-color);
+        }
+
+        .navbar {
+            height: 64px;
+            background-color: white;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .navbar-brand {
+            font-size: 20px;
+            font-weight: bold;
+            color: var(--primary-color) !important;
+        }
+
+        .container {
+            max-width: 1200px;
+            padding: var(--spacing-large);
+        }
+
+        h1 {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: var(--spacing-large);
+            color: var(--text-primary);
+        }
+
+        .question-card {
+            background: white;
+            padding: var(--spacing-large);
+            border-radius: var(--border-radius);
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            margin-bottom: var(--spacing-large);
+        }
+
+        .form-label {
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--text-primary);
+            margin-bottom: var(--spacing-unit);
+        }
+
+        .form-control, .form-select {
+            padding: 12px;
+            border-radius: var(--border-radius);
+            border: 1px solid #ddd;
+            margin-bottom: var(--spacing-unit);
+            font-size: 14px;
+        }
+
+        .form-control:focus, .form-select:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 0.2rem rgba(255, 0, 0, 0.25);
+        }
+
+        .btn-primary {
+            background-color: var(--primary-color);
+            border-color: var(--primary-color);
+            padding: 12px var(--spacing-large);
+            font-size: 16px;
+            font-weight: 500;
+            height: 48px;
+            border-radius: var(--border-radius);
+            min-width: 200px;
+        }
+
+        .btn-primary:hover {
+            background-color: #cc0000;
+            border-color: #cc0000;
+        }
+
+        .question-number {
+            color: var(--text-secondary);
+            font-weight: 500;
+            margin-right: 8px;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: var(--spacing-unit);
+            }
+            
+            .question-card {
+                padding: var(--spacing-unit);
+            }
+
+            h1 {
+                font-size: 20px;
+            }
+
+            .btn-primary {
+                width: 100%;
+            }
+        }
+    </style>
 </head>
 <body>
-    <div class="container mt-5">
-        <h1>Employee Satisfaction Survey</h1>
-        <form id="surveyForm" class="mt-4">
-            <div class="mb-3">
-                <label for="name" class="form-label">Name</label>
-                <input type="text" class="form-control" id="name" name="name" required>
+    <nav class="navbar navbar-expand-lg navbar-light">
+        <div class="container">
+            <a class="navbar-brand" href="/">Employee Survey</a>
+            <div class="d-flex">
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="/api/survey">Survey Form</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/api/survey/admin">Dashboard</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/api/survey/all-data">All Data</a>
+                    </li>
+                </ul>
             </div>
-            <div class="mb-3">
-                <label for="email" class="form-label">Email</label>
-                <input type="email" class="form-control" id="email" name="email" required>
-            </div>
+        </div>
+    </nav>
 
-            <div class="mb-3">
-                <label class="form-label">1. How satisfied are you with your current role and responsibilities?</label>
-                <select class="form-select" name="roleSatisfaction" required>
-                    <option value="">Select an option</option>
-                    <option value="Very satisfied">Very satisfied</option>
-                    <option value="Satisfied">Satisfied</option>
-                    <option value="Neutral">Neutral</option>
-                    <option value="Dissatisfied">Dissatisfied</option>
-                    <option value="Very dissatisfied">Very dissatisfied</option>
-                </select>
-            </div>
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <h1 class="text-center">Employee Satisfaction Survey</h1>
+                <form id="surveyForm">
+                    <div class="question-card">
+                        <div class="mb-4">
+                            <label for="name" class="form-label">Name</label>
+                            <input type="text" class="form-control" id="name" name="name" required 
+                                   aria-label="Enter your name">
+                        </div>
+                        <div class="mb-4">
+                            <label for="email" class="form-label">Email</label>
+                            <input type="email" class="form-control" id="email" name="email" required
+                                   aria-label="Enter your email address">
+                        </div>
+                    </div>
 
-            <div class="mb-3">
-                <label class="form-label">2. How would you rate the support and communication you receive from your manager?</label>
-                <select class="form-select" name="managerSupport" required>
-                    <option value="">Select an option</option>
-                    <option value="Excellent">Excellent</option>
-                    <option value="Good">Good</option>
-                    <option value="Average">Average</option>
-                    <option value="Poor">Poor</option>
-                    <option value="Very poor">Very poor</option>
-                </select>
-            </div>
+                    <div class="question-card">
+                        <label class="form-label">
+                            <span class="question-number">1.</span>
+                            How satisfied are you with your current role and responsibilities?
+                        </label>
+                        <select class="form-select" name="roleSatisfaction" required
+                               aria-label="Select your satisfaction level with current role">
+                            <option value="">Select an option</option>
+                            <option value="Very satisfied">Very satisfied</option>
+                            <option value="Satisfied">Satisfied</option>
+                            <option value="Neutral">Neutral</option>
+                            <option value="Dissatisfied">Dissatisfied</option>
+                            <option value="Very dissatisfied">Very dissatisfied</option>
+                        </select>
+                    </div>
 
-            <div class="mb-3">
-                <label class="form-label">3. Do you feel your contributions are valued and recognized at work?</label>
-                <select class="form-select" name="valueRecognition" required>
-                    <option value="">Select an option</option>
-                    <option value="Strongly agree">Strongly agree</option>
-                    <option value="Agree">Agree</option>
-                    <option value="Neutral">Neutral</option>
-                    <option value="Disagree">Disagree</option>
-                    <option value="Strongly disagree">Strongly disagree</option>
-                </select>
-            </div>
+                    <div class="question-card">
+                        <label class="form-label">
+                            <span class="question-number">2.</span>
+                            How would you rate the support and communication you receive from your manager?
+                        </label>
+                        <select class="form-select" name="managerSupport" required
+                               aria-label="Rate manager support and communication">
+                            <option value="">Select an option</option>
+                            <option value="Excellent">Excellent</option>
+                            <option value="Good">Good</option>
+                            <option value="Average">Average</option>
+                            <option value="Poor">Poor</option>
+                            <option value="Very poor">Very poor</option>
+                        </select>
+                    </div>
 
-            <div class="mb-3">
-                <label class="form-label">4. How satisfied are you with the opportunities for growth and development within the organization?</label>
-                <select class="form-select" name="growthOpportunities" required>
-                    <option value="">Select an option</option>
-                    <option value="Very satisfied">Very satisfied</option>
-                    <option value="Satisfied">Satisfied</option>
-                    <option value="Neutral">Neutral</option>
-                    <option value="Dissatisfied">Dissatisfied</option>
-                    <option value="Very dissatisfied">Very dissatisfied</option>
-                </select>
-            </div>
+                    <div class="question-card">
+                        <label class="form-label">
+                            <span class="question-number">3.</span>
+                            Do you feel your contributions are valued and recognized at work?
+                        </label>
+                        <select class="form-select" name="valueRecognition" required
+                               aria-label="Rate how valued and recognized you feel">
+                            <option value="">Select an option</option>
+                            <option value="Strongly agree">Strongly agree</option>
+                            <option value="Agree">Agree</option>
+                            <option value="Neutral">Neutral</option>
+                            <option value="Disagree">Disagree</option>
+                            <option value="Strongly disagree">Strongly disagree</option>
+                        </select>
+                    </div>
 
-            <div class="mb-3">
-                <label class="form-label">5. How likely are you to recommend this company as a great place to work?</label>
-                <select class="form-select" name="companyRecommendation" required>
-                    <option value="">Select an option</option>
-                    <option value="Extremely likely">Extremely likely</option>
-                    <option value="Very likely">Very likely</option>
-                    <option value="Somewhat likely">Somewhat likely</option>
-                    <option value="Not very likely">Not very likely</option>
-                    <option value="Not at all likely">Not at all likely</option>
-                </select>
-            </div>
+                    <div class="question-card">
+                        <label class="form-label">
+                            <span class="question-number">4.</span>
+                            How satisfied are you with the opportunities for growth and development?
+                        </label>
+                        <select class="form-select" name="growthOpportunities" required
+                               aria-label="Rate satisfaction with growth opportunities">
+                            <option value="">Select an option</option>
+                            <option value="Very satisfied">Very satisfied</option>
+                            <option value="Satisfied">Satisfied</option>
+                            <option value="Neutral">Neutral</option>
+                            <option value="Dissatisfied">Dissatisfied</option>
+                            <option value="Very dissatisfied">Very dissatisfied</option>
+                        </select>
+                    </div>
 
-            <button type="submit" class="btn btn-primary">Submit Survey</button>
-        </form>
+                    <div class="question-card">
+                        <label class="form-label">
+                            <span class="question-number">5.</span>
+                            How likely are you to recommend this company as a great place to work?
+                        </label>
+                        <select class="form-select" name="companyRecommendation" required
+                               aria-label="Rate likelihood to recommend company">
+                            <option value="">Select an option</option>
+                            <option value="Extremely likely">Extremely likely</option>
+                            <option value="Very likely">Very likely</option>
+                            <option value="Somewhat likely">Somewhat likely</option>
+                            <option value="Not very likely">Not very likely</option>
+                            <option value="Not at all likely">Not at all likely</option>
+                        </select>
+                    </div>
+
+                    <div class="text-center mt-4">
+                        <button type="submit" class="btn btn-primary">Submit Survey</button>
+                    </div>
+                </form>
+            </div>
+        </div>
     </div>
 
     <script>
@@ -97,8 +260,9 @@
                 });
 
                 if (response.ok) {
-                    alert('Thank you for completing the survey!');
-                    e.target.reset();
+                    // Redirect to thank you page with survey data
+                    const params = new URLSearchParams(data);
+                    window.location.href = `/api/survey/thank-you?${params.toString()}`;
                 } else {
                     alert('Error submitting survey. Please try again.');
                 }

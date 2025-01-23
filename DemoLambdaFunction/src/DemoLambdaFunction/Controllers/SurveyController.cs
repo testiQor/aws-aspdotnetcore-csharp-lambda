@@ -81,5 +81,19 @@ namespace DemoLambdaFunction.Controllers
             var html = System.IO.File.ReadAllText("wwwroot/admin.html");
             return Content(html, "text/html");
         }
+
+        [HttpGet("all-data")]
+        public IActionResult AllDataGrid()
+        {
+            var html = System.IO.File.ReadAllText("wwwroot/all-data.html");
+            return Content(html, "text/html");
+        }
+
+        [HttpGet("thank-you")]
+        public IActionResult ThankYou()
+        {
+            var html = System.IO.File.ReadAllText("wwwroot/thank-you.html");
+            return Content(html, "text/html");
+        }
     }
 }
