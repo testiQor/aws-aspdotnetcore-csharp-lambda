@@ -97,8 +97,9 @@
                 });
 
                 if (response.ok) {
-                    alert('Thank you for completing the survey!');
-                    e.target.reset();
+                    // Redirect to thank you page with survey data
+                    const params = new URLSearchParams(data);
+                    window.location.href = `/api/survey/thank-you?${params.toString()}`;
                 } else {
                     alert('Error submitting survey. Please try again.');
                 }

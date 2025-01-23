@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Thank You - Survey Submitted</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container mt-5">
+        <div class="card">
+            <div class="card-body">
+                <h1 class="card-title text-center mb-4">Thank You for Your Feedback!</h1>
+                <div class="alert alert-success">
+                    Your survey has been successfully submitted.
+                </div>
+
+                <h3 class="mt-4">Your Responses:</h3>
+                <div class="table-responsive">
+                    <table class="table table-bordered">
+                        <tbody id="surveyResponses">
+                            <!-- Will be populated by JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="text-center mt-4">
+                    <a href="/" class="btn btn-primary">Return to Survey</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Get URL parameters
+        const urlParams = new URLSearchParams(window.location.search);
+        
+        // Define the fields and their display names
+        const fields = {
+            'name': 'Name',
+            'email': 'Email',
+            'roleSatisfaction': 'Role Satisfaction',
+            'managerSupport': 'Manager Support',
+            'valueRecognition': 'Value Recognition',
+            'growthOpportunities': 'Growth Opportunities',
+            'companyRecommendation': 'Company Recommendation'
+        };
+
+        // Populate the table with survey responses
+        const tbody = document.getElementById('surveyResponses');
+        Object.entries(fields).forEach(([key, label]) => {
+            const value = urlParams.get(key);
+            if (value) {
+                tbody.innerHTML += `
+                    <tr>
+                        <th class="w-25">${escapeHtml(label)}</th>
+                        <td>${escapeHtml(value)}</td>
+                    </tr>
+                `;
+            }
+        });
+
+        // Helper function to prevent XSS
+        function escapeHtml(unsafe) {
+            return unsafe
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;")
+                .replace(/"/g, "&quot;")
+                .replace(/'/g, "&#039;");
+        }
+    </script>
+</body>
+</html>
