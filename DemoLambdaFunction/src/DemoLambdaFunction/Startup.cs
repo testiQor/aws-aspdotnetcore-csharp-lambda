@@ -1,4 +1,7 @@
-﻿namespace DemoLambdaFunction;
+﻿using Microsoft.EntityFrameworkCore;
+using DemoLambdaFunction.Data;
+
+namespace DemoLambdaFunction;
 
 public class Startup
 {
@@ -13,6 +16,17 @@ public class Startup
     public void ConfigureServices(IServiceCollection services)
     {
         services.AddControllersWithViews();
+        services.AddDbContext<SurveyDbContext>(options =>
+            options.UseNpgsql(Configuration.GetConnectionString("DefaultConnection")));
+        services.AddCors(options =>
+        {
+            options.AddDefaultPolicy(builder =>
+            {
+                builder.AllowAnyOrigin()
+                       .AllowAnyMethod()
+                       .AllowAnyHeader();
+            });
+        });
     }
 
     // This method gets called by the runtime. Use this method to configure the HTTP request pipeline
@@ -29,6 +43,9 @@ public class Startup
 
         app.UseAuthorization();
 
+        app.UseCors();
+        app.UseStaticFiles();
+        
         app.UseEndpoints(endpoints =>
         {
             endpoints.MapControllers();

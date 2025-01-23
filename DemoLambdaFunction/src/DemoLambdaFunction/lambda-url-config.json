@@ -1,0 +1,11 @@
+{
+  "AuthType": "NONE",
+  "Cors": {
+    "AllowCredentials": false,
+    "AllowHeaders": ["*"],
+    "AllowMethods": ["GET"],
+    "AllowOrigins": ["*"],
+    "ExposeHeaders": [],
+    "MaxAge": 0
+  }
+}
