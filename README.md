@@ -3,7 +3,7 @@ This repository contains a demo AWS Lambda function built with ASP.NET Core that
 
 ## Prerequisites
 - .NET SDK 8.0
-- AWS CLI installed and configured
+- AWS CLI installed and configured with appropriate permissions
 - AWS Lambda Tools for .NET CLI (`dotnet tool install -g Amazon.Lambda.Tools`)
 
 ## Project Structure
@@ -15,51 +15,93 @@ DemoLambdaFunction/
 │   │   └── ValuesController.cs  # API endpoints
 │   ├── aws-lambda-tools-defaults.json
 │   ├── serverless.template
+│   ├── api-gateway.json         # API Gateway configuration
+│   ├── lambda-url-config.json   # Lambda Function URL configuration
 │   └── Startup.cs
 ```
 
-## Building and Deploying
+## Deployment Options
 
-1. Clone the repository:
+### Option 1: Direct Lambda Deployment
+1. Build and package:
 ```bash
-git clone https://github.com/iqorgit/aws-lambda-dotnet.git
-cd aws-lambda-dotnet/DemoLambdaFunction/src/DemoLambdaFunction
+dotnet lambda package --configuration Release
 ```
 
-2. Build the project:
+2. Create Lambda function:
 ```bash
-dotnet build
+aws lambda create-function \
+  --function-name aws-lambda-dotnet \
+  --runtime dotnet8 \
+  --handler DemoLambdaFunction::DemoLambdaFunction.LambdaEntryPoint::FunctionHandlerAsync \
+  --role YOUR_LAMBDA_ROLE_ARN \
+  --zip-file fileb://bin/Release/net8.0/DemoLambdaFunction.zip
 ```
 
-3. Deploy to AWS Lambda:
+3. Create Lambda Function URL (Optional):
 ```bash
-dotnet lambda deploy-serverless
+aws lambda create-function-url-config \
+  --function-name aws-lambda-dotnet \
+  --auth-type NONE \
+  --cli-input-json file://lambda-url-config.json
+```
+
+### Option 2: API Gateway Integration
+1. Deploy Lambda function (follow Option 1 steps 1-2)
+
+2. Create API Gateway:
+```bash
+aws apigateway import-rest-api \
+  --body file://api-gateway.json \
+  --region us-east-1
+```
+
+3. Create deployment:
+```bash
+aws apigateway create-deployment \
+  --rest-api-id YOUR_API_ID \
+  --stage-name prod
+```
+
+### Option 3: Serverless Deployment
+```bash
+dotnet lambda deploy-serverless \
+  --stack-name aws-lambda-dotnet \
+  --s3-bucket YOUR_S3_BUCKET
 ```
 
 ## Testing
 
 ### Local Testing
-1. Run the application locally:
+1. Run locally:
 ```bash
 dotnet run
 ```
-2. Navigate to `http://localhost:5000` in your web browser
-3. You should see the message "Calling from Lambda"
+2. Navigate to `http://localhost:5000`
+3. You should see "Calling from Lambda"
 
 ### Testing on AWS
-After deployment:
-1. The deployment will output an API Gateway URL
-2. Open the URL in your web browser
-3. You should see the "Calling from Lambda" message
+
+#### Lambda Function URL
+```bash
+curl https://YOUR_FUNCTION_URL.lambda-url.us-east-1.on.aws
+```
+
+#### API Gateway
+```bash
+curl https://YOUR_API_ID.execute-api.us-east-1.amazonaws.com/prod
+```
 
 ## Configuration
 - Runtime: .NET 8
 - Memory: 256MB
 - Timeout: 30 seconds
+- Region: us-east-1
 - Handler: DemoLambdaFunction::DemoLambdaFunction.LambdaEntryPoint::FunctionHandlerAsync
 
 ## Features
 - Handles HTTP requests using Amazon.Lambda.AspNetCoreServer
 - Returns HTML page with "Calling from Lambda" message
-- Configured for .NET SDK 8
-- Includes AWS Lambda Tools defaults
+- Multiple deployment options (direct Lambda, API Gateway, serverless)
+- CORS-enabled Lambda Function URL support
+- Comprehensive API Gateway integration
